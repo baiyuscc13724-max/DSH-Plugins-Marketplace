@@ -159,6 +159,15 @@ When both exist and differ → the card shows an «Update» button plus `install
 
 ---
 
+## ⚖️ Disclaimer
+
+- This marketplace only provides **discovery and installation convenience**: every plugin listed comes from a third-party GitHub repository, developed and maintained independently by its authors, and is **not affiliated with DeepSeek Harness or this marketplace in any way**
+- The marketplace makes **no express or implied warranty** about the quality, reliability, security, usability, or fitness of any plugin — including but not limited to code quality, license compliance, data privacy, malicious behavior, and compatibility
+- A plugin appearing in the index **does not constitute any recommendation or endorsement**; installing means you have evaluated and accepted the risks yourself. Review the repo's source and README before installing
+- This marketplace is provided **AS-IS**. The marketplace and its developers accept **no liability** for any direct or indirect loss (including data loss, system damage, privacy leaks, etc.) caused by installing or using any third-party plugin
+
+---
+
 ## 🔄 Known limitations
 
 - Version detection only works for plugins with `package.json`; skills / presets / script types have no version concept
