@@ -1,0 +1,38 @@
+name: build-registry
+
+on:
+  schedule:
+    # 每天 UTC 03:17 更新索引（错峰时段）
+    - cron: "17 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build registry.json
+        run: node scripts/build-registry.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit registry.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry.json
+          if git diff --cached --quiet; then
+            echo "registry.json 无变化，跳过提交"
+          else
+            git commit -m "chore: update registry.json"
+            git push
+            echo "已提交更新"
+          fi
