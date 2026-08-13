@@ -196,6 +196,12 @@ When both exist and differ → the card shows an «Update» button plus `install
 
 ---
 
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for the full version history (all versions before v1.0.0 are part of the beta series).
+
+---
+
 ## 📄 License
 
 MIT

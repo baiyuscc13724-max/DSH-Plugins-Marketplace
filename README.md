@@ -195,6 +195,12 @@ GitHub Actions（每 2 小时，仓库自带 token）
 
 ---
 
+## 📝 更新日志
+
+版本迭代记录见 [CHANGELOG.md](CHANGELOG.md)（v1.0.0 之前为 beta 系列）。
+
+---
+
 ## 📄 许可
 
 MIT
