@@ -28,7 +28,7 @@
 
 ## ✨ 功能特性
 
-- **全量拉取**：插件列表优先从**静态索引**（`registry.json`，jsDelivr CDN 分发，GitHub Actions 每日自动生成）加载——零 API 调用、零限流，几千个插件也能秒开；索引不可用时自动回退 GitHub 搜索 API 分页拉取（按 Star 数从高到低排列，缓存 10 分钟）
+- **全量拉取**：插件列表优先从**静态索引**（`registry.json`，jsDelivr CDN 分发，GitHub Actions 每 2 小时自动生成）加载——零 API 调用、零限流，几千个插件也能秒开；索引不可用时自动回退 GitHub 搜索 API 分页拉取（按 Star 数从高到低排列，缓存 10 分钟）
 - **一键安装**：每个插件卡片带「安装」按钮，点击后自动完成：克隆仓库 → 识别类型 → 扫描所需环境变量 → 执行安装
 - **自带一键安装**：本仓库内置 `install.ps1` / `install.sh`，一行命令即可安装，也可把上面的一句话直接交给 AI 执行
 - **智能类型识别**：自动区分并安装以下类型的仓库：
@@ -83,14 +83,14 @@
 ### 数据源（registry 优先，搜索 API 兜底）
 
 ```
-GitHub Actions（每日 03:17 UTC，仓库自带 token）
+GitHub Actions（每 2 小时，仓库自带 token）
    └─ scripts/build-registry.mjs：分页拉取 topic:dsh-plugin，增量合并，去重/排除本体
-        └─ 提交 registry.json 回 main（全量 448+ 个插件，按 Star 排序）
+        └─ 提交 registry.json 回 main（全量 460+ 个插件，按 Star 排序）
              └─ 插件读取：jsDelivr CDN（国内快）→ raw.githubusercontent（兜底）
                   └─ 全部失败才回退 GitHub 搜索 API（分页翻到底，缓存 10 分钟）
 ```
 
-- 索引由 CI 生成，**终端用户零 API 调用、零限流**；新插件最迟一天内进入索引
+- 索引由 CI 生成，**终端用户零 API 调用、零限流**；新插件最迟两小时内进入索引
 - 索引内容只含仓库元数据（名称/描述/Star/更新时间/标签/许可），安装仍然直连 `github.com` 克隆
 
 ### 安装流程（5 步）

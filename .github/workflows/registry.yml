@@ -2,8 +2,8 @@ name: build-registry
 
 on:
   schedule:
-    # 每天 UTC 03:17 更新索引（错峰时段）
-    - cron: "17 3 * * *"
+    # 每 2 小时更新一次索引（UTC；即北京时间每偶数点整）
+    - cron: "0 */2 * * *"
   workflow_dispatch: {}
 
 permissions:
