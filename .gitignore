@@ -10,6 +10,9 @@ build/
 marketplace/
 installed.json
 
+# 本地 TLS 调试用的 CA 包（SteamTools/代理 MITM 信任锚），勿提交
+.ca-bundle.crt
+
 # 日志与临时文件
 *.log
 npm-debug.log*
