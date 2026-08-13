@@ -36,7 +36,7 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 
 ## ✨ Features
 
-- **Full fetch**: the plugin list is served primarily from a **static registry** (`registry.json`, distributed via the jsDelivr CDN and regenerated every 2 hours by GitHub Actions) — zero API calls, zero rate limits, instant even with thousands of plugins; when the registry is unavailable it automatically falls back to paging the GitHub search API (sorted by star count descending, 10-minute cache)
+- **Full fetch**: the plugin list is served primarily from a **static registry** (`registry.json`, distributed via the jsDelivr CDN and regenerated every 2 hours by GitHub Actions) — zero API calls, zero rate limits, instant even with thousands of plugins; when the registry is unavailable it automatically falls back to paging the GitHub search API (10-minute cache). List order: **installed plugins first**, then the rest sorted by star count descending
 - **One-click install**: each card has an «Install» button that automatically runs: clone repo → detect type → scan required env vars → install
 - **Built-in quick install**: this repo ships `install.ps1` / `install.sh` — install with a single command, or hand the one-liner above to any AI
 - **Smart type detection**: automatically detects and installs the following repo types:

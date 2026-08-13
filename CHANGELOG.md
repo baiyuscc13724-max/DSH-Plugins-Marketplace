@@ -4,9 +4,13 @@
 
 ---
 
-## Unreleased / 未发布
+## v1.1.0 — 2026-08-14（体验优化 / UX improvements）
 
-- **npm 生命周期脚本确认弹窗**：cordis 插件含 `prepare` / `install` / `postinstall` 等脚本时，安装前弹窗征求确认——「允许执行」则按用户授权运行脚本（含回退链），「不允许」则取消安装并清理全部痕迹 / npm lifecycle script confirmation dialog: plugins with `prepare` / `install` / `postinstall` etc. now ask for explicit consent before running scripts — «Allow» runs them as authorized (with fallback chain), «Deny» cancels the install and cleans up all traces
+- **已安装置顶**：打开市场时自己已安装的插件排在列表最前面，其余按 Star 数降序；安装成功后卡片立即跳到顶部，无需刷新 / Installed plugins are listed first when opening the marketplace, the rest sorted by stars; a freshly installed card jumps to the top immediately
+- **点击安装自动滚动到页首**的安装进度面板（阶段切换触发，日志刷新不打扰）/ auto-scroll to the install panel at the top when starting an install (triggered on phase change only)
+- **pnpm 本地链接依赖兼容**：剥离 `link:` / `workspace:` 协议依赖后再 npm install（修复 `EUNSUPPORTEDPROTOCOL`），运行时由 DSH 宿主提供 / strips pnpm-only `link:`/`workspace:` dependencies before `npm install` (fixes `EUNSUPPORTEDPROTOCOL`); runtime resolution provided by the DSH host
+- **npm 生命周期脚本确认弹窗**：`prepare` / `install` / `postinstall` 等脚本执行前征求确认——允许则按授权执行（带回退链），拒绝则取消并清空全部痕迹 / confirmation dialog for npm lifecycle scripts — «Allow» runs them as authorized (with fallback chain), «Deny» cancels and cleans up all traces
+- **API Key 输入框改密码模式**、请求体上限、CSRF 自定义头校验等安全细节 / password-mode secret inputs, request body limit, CSRF custom-header check
 
 ---
 
