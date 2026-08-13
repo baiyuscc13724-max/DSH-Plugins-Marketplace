@@ -4,6 +4,12 @@
 
 ---
 
+## Unreleased / 未发布
+
+- **npm 生命周期脚本确认弹窗**：cordis 插件含 `prepare` / `install` / `postinstall` 等脚本时，安装前弹窗征求确认——「允许执行」则按用户授权运行脚本（含回退链），「不允许」则取消安装并清理全部痕迹 / npm lifecycle script confirmation dialog: plugins with `prepare` / `install` / `postinstall` etc. now ask for explicit consent before running scripts — «Allow» runs them as authorized (with fallback chain), «Deny» cancels the install and cleans up all traces
+
+---
+
 ## v1.0.0 — 2026-08-14（正式版 / Stable）
 
 - 🎉 首个正式版本发布 / First stable release

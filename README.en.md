@@ -45,7 +45,7 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
   - cordis plugin (contains `package.json`) → installs dependencies and registers into the web profile
   - install script (`install.sh` / `install.ps1`) → executes the script
 - **User input interception**: when a plugin needs env vars like `API_KEY` / `TOKEN` / `SECRET`, **installation pauses automatically** and an in-page dialog asks you for the material (or you can skip) — never installs blind
-- **Script execution confirmation**: when a third-party install script is detected, asks for your confirmation first (security warning); declining cancels the install
+- **Script execution confirmation**: when a third-party install script (`install.sh` / `install.ps1`) or an npm lifecycle script (`prepare` / `install` / `postinstall`, etc.) is detected, asks for your confirmation first — declining cancels the install and **cleans up all traces**
 - **Installed recognition**: four-way detection — install manifest (`installed.json`) + directory heuristic probing + package-name mapping scan + self-identification via the plugin's own `repository` field; installed plugins show a disabled grey «Installed» button
 - **Bilingual**: the UI and install logs follow DSH's language setting — 中文 / English (Settings → General → Language)
 - **Version detection & updates**: cordis plugins compare the installed version against the latest version of the repo (read from the local cache, zero extra network requests); when they differ the button turns into «Update» — click to overwrite-upgrade
