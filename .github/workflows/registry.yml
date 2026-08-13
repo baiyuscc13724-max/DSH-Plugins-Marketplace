@@ -9,6 +9,11 @@ on:
 permissions:
   contents: write
 
+# 同一时间只允许一个构建运行，避免定时任务与手动触发互相重叠
+concurrency:
+  group: build-registry
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,13 +37,23 @@ jobs:
 
       - name: Commit registry.json
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add registry.json
           if git diff --cached --quiet; then
             echo "registry.json 无变化，跳过提交"
-          else
-            git commit -m "chore: update registry.json"
-            git push
-            echo "已提交更新"
+            exit 0
           fi
+          git commit -m "chore: update registry.json"
+          # 远端可能已被作者或其他提交推进：先 rebase 再推，最多重试 3 次
+          for i in 1 2 3; do
+            if git pull --rebase origin main >/dev/null 2>&1 && git push origin main >/dev/null 2>&1; then
+              echo "已提交更新"
+              exit 0
+            fi
+            echo "推送被远端新提交拒绝（第 $i 次），10 秒后重试..."
+            sleep 10
+          done
+          echo "推送失败：多次重试后仍被拒绝" >&2
+          exit 1
