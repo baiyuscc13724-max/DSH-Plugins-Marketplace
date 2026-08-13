@@ -92,13 +92,21 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
   }
 
-  // 增量合并：完整拉取则整体替换，否则保留旧条目（新数据优先）
+  // 增量合并：完整拉取则整体替换，否则保留旧条目（新数据优先）。
+  // 每个条目记录 registry_seen_at（最近一次在拉取结果中出现的时间），
+  // partial 合并时剔除超过 STALE_DAYS 未再出现的条目（topic 已移除的仓库不再长期残留）。
+  const STALE_DAYS = 14;
+  const now = Date.now();
   const existing = complete ? [] : await loadExisting();
+  const freshNames = new Set(fresh.map((r) => r.full_name));
   const merged = new Map();
   for (const r of [...existing, ...fresh]) {
-    if (r && typeof r.full_name === "string" && !EXCLUDED.has(r.name)) {
-      merged.set(r.full_name, r);
-    }
+    if (!r || typeof r.full_name !== "string" || EXCLUDED.has(r.name)) continue;
+    const seenAt = freshNames.has(r.full_name)
+      ? new Date().toISOString()
+      : (r.registry_seen_at || "1970-01-01T00:00:00.000Z");
+    if (Date.parse(seenAt) < now - STALE_DAYS * 24 * 3600 * 1000) continue;
+    merged.set(r.full_name, { ...r, registry_seen_at: seenAt });
   }
   const repos = [...merged.values()].sort((a, b) => (b.stargazers_count ?? 0) - (a.stargazers_count ?? 0));
   const out = {

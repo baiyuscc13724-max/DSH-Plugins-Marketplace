@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: 24
 
+      - name: Syntax check
+        run: |
+          node --check scripts/build-registry.mjs
+          node --check lib/index.js
+          node --check lib/client.js
+
       - name: Build registry.json
         run: node scripts/build-registry.mjs
         env:

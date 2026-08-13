@@ -30,14 +30,14 @@ mkdir -p "$(dirname "$DEST")"
 rm -rf "$DEST"
 cp -r "$SRC" "$DEST"
 rm -rf "$DEST/.git"
-rm -f "$DEST/install.ps1" "$DEST/install.sh"
+rm -f "$DEST/install.ps1" "$DEST/install.sh" "$DEST/.ca-bundle.crt"
 
-# 注册到 web profile 补丁（幂等）
+# 注册到 web profile 补丁（幂等；行级精确匹配，避免前缀子串误判）
 PATCH="$HOME/.dsh/profiles/web/cordis.patch.yml"
-if [[ -f "$PATCH" ]] && grep -q "name: dsh-plugin-marketplace" "$PATCH"; then
+if [[ -f "$PATCH" ]] && grep -qE '^name:[[:space:]]+dsh-plugin-marketplace[[:space:]]*$' "$PATCH"; then
   echo "Already registered in cordis.patch.yml (skipped)"
 else
-  printf '\n- insert:\n    - id: plugin-marketplace\n      name: dsh-plugin-marketplace\n' >> "$PATCH"
+  printf '\n- insert:\n    - id: dsh-plugin-marketplace\n      name: dsh-plugin-marketplace\n' >> "$PATCH"
   echo "Registered in cordis.patch.yml"
 fi
 

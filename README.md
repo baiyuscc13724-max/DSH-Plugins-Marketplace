@@ -22,6 +22,7 @@
 | macOS / Linux | `curl -sL https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.sh \| bash` |
 
 > ⚠️ 上述命令会从本仓库下载并执行安装脚本（复制插件本体 + 注册 `cordis.patch.yml`），属于「信任即执行」；也可以克隆仓库后手动运行 `install.ps1` / `install.sh`，或直接在本插件市场中安装本仓库（含 `install.ps1`，市场会先征求你的确认）。
+> 建议先下载脚本**肉眼检查一遍**再执行（`irm <url> | iex` / `curl <url> | bash` 是公认的远程代码执行模式）。
 > 安装完成后需**重启 DSH**（重新运行 `dsh web`）再刷新页面。
 
 ---
@@ -171,6 +172,7 @@ GitHub Actions（每 2 小时，仓库自带 token）
 
 ## 🔄 已知限制
 
+- **安全模型**：安装端点无用户认证，防护依赖「本地网络隔离 + CSRF 头校验」——请勿将 DSH web 端口暴露到不可信网络；安装即意味着在机器上执行第三方代码（npm 依赖与安装脚本），请只安装你信任并已核验的仓库
 - 版本检测仅对含 `package.json` 的插件生效；skill / 预设 / 脚本类无版本概念
 - 插件列表默认走静态索引（CDN）；仅当索引的两个源都不可用时才回退 GitHub 搜索 API，此时未认证限流 **10 次/分钟**，频繁点「刷新」可能触发限流（会提示刷新失败，稍等再试）
 - 安装脚本类插件的「已安装」判定基于缓存目录存在性，卸载（删除缓存）后会重新显示为可安装

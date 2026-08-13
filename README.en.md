@@ -22,6 +22,7 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 | macOS / Linux | `curl -sL https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.sh \| bash` |
 
 > ⚠️ The commands above download and run the install script from this repo (copies the plugin and registers it in `cordis.patch.yml`) — trust-to-execute. Alternatively, clone the repo and run `install.ps1` / `install.sh` manually, or install this repo directly from the plugin marketplace (it contains `install.ps1`, so the marketplace asks for your confirmation first).
+> It is recommended to **review the script first** before executing it (`irm <url> | iex` / `curl <url> | bash` is a well-known remote-code-execution pattern).
 > After installing, **restart DSH** (re-run `dsh web`) and refresh the page.
 
 ---
@@ -171,6 +172,7 @@ When both exist and differ → the card shows an «Update» button plus `install
 
 ## 🔄 Known limitations
 
+- **Security model**: the install endpoint has no user authentication; protection relies on **local-network isolation plus a CSRF header check** — do not expose the DSH web port to untrusted networks. Installing means executing third-party code on your machine (npm dependencies and install scripts); only install repos you trust and have reviewed
 - Version detection only works for plugins with `package.json`; skills / presets / script types have no version concept
 - The plugin list is served from the static registry (CDN) by default; the GitHub search API is used only when both registry sources are unreachable, and its unauthenticated limit is **10 requests/minute** — clicking «Refresh» too often during fallback may hit the limit (the UI will report refresh failure — wait and retry)
 - «Installed» recognition for script-type plugins is based on cache-dir existence; after deleting the cache it will show as installable again

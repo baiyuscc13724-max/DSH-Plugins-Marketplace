@@ -1,4 +1,4 @@
-﻿<#
+<#
   DSH 插件市场（dsh-plugin-marketplace）一键安装脚本
 
   支持三种执行方式：
@@ -34,15 +34,16 @@ Copy-Item $src $dest -Recurse
 Remove-Item (Join-Path $dest ".git") -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $dest "install.ps1") -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $dest "install.sh") -Force -ErrorAction SilentlyContinue
+Remove-Item (Join-Path $dest ".ca-bundle.crt") -Force -ErrorAction SilentlyContinue
 
-# 注册到 web profile 补丁（幂等）
+# 注册到 web profile 补丁（幂等；行级精确匹配，避免前缀子串误判）
 $patch = Join-Path $env:USERPROFILE ".dsh\profiles\web\cordis.patch.yml"
 $registered = $false
 if (Test-Path $patch) {
-  $registered = [bool](Select-String -Path $patch -Pattern "name: dsh-plugin-marketplace" -Quiet)
+  $registered = [bool](Select-String -Path $patch -Pattern "^name:\s+dsh-plugin-marketplace\s*$" -Quiet)
 }
 if (-not $registered) {
-  $entry = "`n- insert:`n    - id: plugin-marketplace`n      name: dsh-plugin-marketplace`n"
+  $entry = "`n- insert:`n    - id: dsh-plugin-marketplace`n      name: dsh-plugin-marketplace`n"
   $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
   [System.IO.File]::AppendAllText($patch, $entry, $utf8NoBom)
   Write-Host "Registered in cordis.patch.yml"
