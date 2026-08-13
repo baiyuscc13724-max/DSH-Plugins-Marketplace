@@ -109,6 +109,9 @@ async function main() {
     merged.set(r.full_name, { ...r, registry_seen_at: seenAt });
   }
   const repos = [...merged.values()].sort((a, b) => (b.stargazers_count ?? 0) - (a.stargazers_count ?? 0));
+  // 富化：为缺失 pkg_name 的仓库抓取 package.json 的 name（供市场把本地已装包与仓库关联）。
+  // 失败容忍：拿不到包名的仓库 pkg_name 为 null，不影响其余功能。
+  await enrichPkgNames(repos);
   const out = {
     generated_at: new Date().toISOString(),
     count: repos.length,
@@ -118,6 +121,30 @@ async function main() {
   await mkdir(dirname(OUT_FILE), { recursive: true });
   await writeFile(OUT_FILE, JSON.stringify(out, null, 2) + "\n", "utf8");
   log(`已写入 ${OUT_FILE}：${repos.length} 个插件（${out.source}）`);
+}
+
+/** 并发抓取仓库 package.json 的 name 字段写入 pkg_name（已存在的跳过）。 */
+async function enrichPkgNames(repos) {
+  const todo = repos.filter((r) => !r.pkg_name);
+  if (todo.length === 0) return;
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < todo.length) {
+      const r = todo[cursor++];
+      const url = `https://raw.githubusercontent.com/${r.full_name}/${r.default_branch}/package.json`;
+      try {
+        const res = await fetch(url, { headers: { "User-Agent": "dsh-plugin-marketplace-registry" } });
+        if (res.ok) {
+          const pkg = await res.json();
+          if (typeof pkg.name === "string" && pkg.name.length > 0) {
+            r.pkg_name = pkg.name;
+          }
+        }
+      } catch { /* 网络失败：保持 null */ }
+    }
+  };
+  await Promise.all(Array.from({ length: 8 }, () => worker()));
+  log(`pkg_name 富化完成：${todo.filter((r) => r.pkg_name).length}/${todo.length}`);
 }
 
 main().catch((error) => {

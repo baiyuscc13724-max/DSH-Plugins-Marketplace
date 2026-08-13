@@ -124,12 +124,15 @@ GitHub Actions（每 2 小时，仓库自带 token）
 两者都存在且不一致 → 卡片显示「更新」按钮 + `已装 vX → vY` 提示。
 （仅对含 `package.json` 的 cordis 插件生效；skill / 预设 / 脚本类无版本概念。）
 
-### 已安装判定（四重）
+### 已安装判定（五重，打开市场即自动比对）
 
 1. `~/.dsh/marketplace/installed.json` 安装清单（本插件安装的）
-2. 目录启发式探测：`~/.dsh/skills/<名>`、`~/.dsh/.agent-presets/<名>`、`profiles/web/node_modules/<名>`（含原始仓库名目录）、市场缓存目录
-3. 包名映射：扫描已安装目录的 `package.json` 名称，与仓库名/缓存克隆包名比对——仓库名与包名不一致（如 `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`）也能识别，并正确读出已装版本
-4. 本体识别：仓库命中本插件自身 `package.json` 的 `repository` 字段即视为已安装（市场不会把自己的仓库显示为「安装」）
+2. 目录启发式探测：`~/.dsh/skills/<名>`、`~/.dsh/.agent-presets/<名>`、市场缓存克隆
+3. 包名映射：扫描已安装目录的 `package.json` 名称（含 scoped 包 `@scope/name`），与仓库名 / 原始仓库名 / 索引包名（`pkg_name`）比对——仓库名与包名不一致（如 `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`）也能识别，并正确读出已装版本
+4. **repository 归属校验（双向）**：已装包 `package.json` 的 `repository` 字段必须与目标仓库一致——既防「同名不同仓库」误判，也支持反向查找（先装插件后装市场时，scoped 包 / 包名差异大的插件也能正确标为已安装）
+5. 本体识别：仓库命中本插件自身 `package.json` 的 `repository` 字段即视为已安装
+
+> **官方插件自动排除**：DSH 自带的官方插件（`@deepseek-ai/*`，运行时自动枚举 + 内置兜底清单）永远不会被当成「用户安装的市场插件」，也不会被误标为已安装。
 
 ---
 

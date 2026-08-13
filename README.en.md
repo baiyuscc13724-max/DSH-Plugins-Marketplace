@@ -124,12 +124,15 @@ GitHub Actions (every 2 hours, repo's own token)
 When both exist and differ → the card shows an «Update» button plus `installed vX → vY`.
 (Only applies to cordis plugins containing `package.json`; skills / presets / script types have no version concept.)
 
-### Installed detection (four-way)
+### Installed detection (five-way, auto-reconciled on every open)
 
 1. `~/.dsh/marketplace/installed.json` install manifest (installed via this plugin)
-2. Directory heuristic probing: `~/.dsh/skills/<name>`, `~/.dsh/.agent-presets/<name>`, `profiles/web/node_modules/<name>` (including the raw repo-name dir), market cache dir
-3. Package-name mapping: scans the `package.json` names of installed directories and compares them against the repo name / cached clone package name — repos whose name differs from the package name (e.g. `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`) are still recognized, and the installed version is read correctly
-4. Self-identification: a repo matching this plugin's own `repository` field in `package.json` counts as installed (the market never shows its own repo as «Install»)
+2. Directory heuristic probing: `~/.dsh/skills/<name>`, `~/.dsh/.agent-presets/<name>`, market cache clone
+3. Package-name mapping: scans the `package.json` names of installed directories (including scoped `@scope/name` packages) and compares them against the repo name / raw repo name / registry package name (`pkg_name`) — repos whose name differs from the package name (e.g. `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`) are still recognized, and the installed version is read correctly
+4. **Repository ownership check (both directions)**: the installed package's `repository` field must match the target repo — this prevents false positives for same-named repos from different owners, and enables reverse matching (plugins installed before the marketplace are correctly flagged as installed, even for scoped packages or large name differences)
+5. Self-identification: a repo matching this plugin's own `repository` field in `package.json` counts as installed (the market never shows its own repo as «Install»)
+
+> **Official plugins are auto-excluded**: DSH's built-in official plugins (`@deepseek-ai/*`, discovered at runtime from the install directory plus a fallback list) are never treated as user-installed marketplace plugins and are never mis-flagged as installed.
 
 ---
 

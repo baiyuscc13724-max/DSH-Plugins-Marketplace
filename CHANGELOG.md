@@ -4,6 +4,14 @@
 
 ---
 
+## Unreleased / 未发布
+
+- **先装插件后装市场也能识别**：打开市场即自动扫描已安装的 cordis 插件（含 scoped 包 `@scope/name`），通过包名映射 + `repository` 双向校验与市场仓库比对，命中即标「已安装」/ plugins installed before the marketplace are now auto-detected on open: scans installed cordis packages (including scoped ones) and reconciles them against market repos via package-name mapping + bidirectional `repository` checks
+- **DSH 官方插件清单**：运行时自动枚举 `@deepseek-ai/*` 官方包（含兜底清单），官方插件永远不会被当成或误标为用户安装的市场插件 / DSH official plugin list (runtime-enumerated `@deepseek-ai/*` plus fallback): official plugins are never treated as user-installed market plugins
+- **索引携带包名（pkg_name）**：registry CI 构建时抓取各仓库 package.json 的 name，用于包名与仓库名不一致时的关联 / registry now carries each repo's package name (`pkg_name`) for robust repo↔package association
+
+---
+
 ## v1.1.0 — 2026-08-14（体验优化 / UX improvements）
 
 - **已安装置顶**：打开市场时自己已安装的插件排在列表最前面，其余按 Star 数降序；安装成功后卡片立即跳到顶部，无需刷新 / Installed plugins are listed first when opening the marketplace, the rest sorted by stars; a freshly installed card jumps to the top immediately
