@@ -8,10 +8,29 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 
 ---
 
+## ⚡ Quick install (copy & run)
+
+**One sentence to hand to an AI** (any AI with command execution works — no further explanation needed):
+
+> Install the DSH plugin marketplace (dsh-plugin-marketplace): clone https://github.com/bradeGithub/DSH-Plugins-Marketplace into ~/.dsh/profiles/web/node_modules/dsh-plugin-marketplace, register it in ~/.dsh/profiles/web/cordis.patch.yml (id: plugin-marketplace, name: dsh-plugin-marketplace), then restart dsh web.
+
+**Or just copy & run a command:**
+
+| Platform | Command |
+|---|---|
+| Windows (PowerShell) | `irm https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.ps1 \| iex` |
+| macOS / Linux | `curl -sL https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.sh \| bash` |
+
+> ⚠️ The commands above download and run the install script from this repo (copies the plugin and registers it in `cordis.patch.yml`) — trust-to-execute. Alternatively, clone the repo and run `install.ps1` / `install.sh` manually, or install this repo directly from the plugin marketplace (it contains `install.ps1`, so the marketplace asks for your confirmation first).
+> After installing, **restart DSH** (re-run `dsh web`) and refresh the page.
+
+---
+
 ## ✨ Features
 
 - **Full fetch**: on every DSH startup, fetches **all** plugins under `topic:dsh-plugin` from GitHub (paging to the end), sorted **by star count descending**, with a 10-minute cache
 - **One-click install**: each card has an «Install» button that automatically runs: clone repo → detect type → scan required env vars → install
+- **Built-in quick install**: this repo ships `install.ps1` / `install.sh` — install with a single command, or hand the one-liner above to any AI
 - **Smart type detection**: automatically detects and installs the following repo types:
   - `skill` (contains `SKILL.md`) → installed to `~/.dsh/skills/`
   - agent preset (contains `preset.yml` + `agent.cordis.yml`) → installed to `~/.dsh/.agent-presets/`
@@ -31,6 +50,8 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 ---
 
 ## 📦 Installing this plugin
+
+> 💡 Prefer no manual steps? Use the [⚡ Quick install](#-quick-install-copy--run) section above (a single command, or the one-liner handed to an AI).
 
 The plugin lives at `~/.dsh/profiles/web/node_modules/dsh-plugin-marketplace/` and is registered via `~/.dsh/profiles/web/cordis.patch.yml`:
 

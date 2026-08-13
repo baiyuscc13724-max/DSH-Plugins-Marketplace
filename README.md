@@ -8,10 +8,29 @@
 
 ---
 
+## ⚡ 一键安装（复制即用）
+
+**喂给 AI 的一句话**（AI 具备命令执行能力即可，无需解释）：
+
+> 安装 DSH 插件市场插件（dsh-plugin-marketplace）：克隆 https://github.com/bradeGithub/DSH-Plugins-Marketplace 到 ~/.dsh/profiles/web/node_modules/dsh-plugin-marketplace，在 ~/.dsh/profiles/web/cordis.patch.yml 中注册（id: plugin-marketplace，name: dsh-plugin-marketplace），然后重启 dsh web。
+
+**或者直接复制命令执行：**
+
+| 平台 | 命令 |
+|---|---|
+| Windows (PowerShell) | `irm https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.ps1 \| iex` |
+| macOS / Linux | `curl -sL https://raw.githubusercontent.com/bradeGithub/DSH-Plugins-Marketplace/main/install.sh \| bash` |
+
+> ⚠️ 上述命令会从本仓库下载并执行安装脚本（复制插件本体 + 注册 `cordis.patch.yml`），属于「信任即执行」；也可以克隆仓库后手动运行 `install.ps1` / `install.sh`，或直接在本插件市场中安装本仓库（含 `install.ps1`，市场会先征求你的确认）。
+> 安装完成后需**重启 DSH**（重新运行 `dsh web`）再刷新页面。
+
+---
+
 ## ✨ 功能特性
 
 - **全量拉取**：每次启动 DSH 时自动从 GitHub 拉取 `topic:dsh-plugin` 下的**全部**插件（分页翻到底），并**按 Star 数从高到低**排列，缓存 10 分钟
 - **一键安装**：每个插件卡片带「安装」按钮，点击后自动完成：克隆仓库 → 识别类型 → 扫描所需环境变量 → 执行安装
+- **自带一键安装**：本仓库内置 `install.ps1` / `install.sh`，一行命令即可安装，也可把上面的一句话直接交给 AI 执行
 - **智能类型识别**：自动区分并安装以下类型的仓库：
   - `skill`（含 `SKILL.md`）→ 安装到 `~/.dsh/skills/`
   - agent 预设（含 `preset.yml` + `agent.cordis.yml`）→ 安装到 `~/.dsh/.agent-presets/`
@@ -31,6 +50,8 @@
 ---
 
 ## 📦 安装本插件
+
+> 💡 不想手动操作？用上面的 [⚡ 一键安装](#-一键安装复制即用)（一条命令或一句话交给 AI）。
 
 本插件位于 `~/.dsh/profiles/web/node_modules/dsh-plugin-marketplace/`，并通过 `~/.dsh/profiles/web/cordis.patch.yml` 注册：
 
