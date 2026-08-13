@@ -91,6 +91,7 @@ GitHub Actions（每 2 小时，仓库自带 token）
 ```
 
 - 索引由 CI 生成，**终端用户零 API 调用、零限流**；新插件最迟两小时内进入索引
+- **手动立即更新**：运行仓库里的 `update-registry.bat`（Windows）或 `update-registry.sh`（macOS / Linux），随时触发 CI 重建索引，无需等待 2 小时定时（需已安装并登录 [gh CLI](https://cli.github.com)）
 - 索引内容只含仓库元数据（名称/描述/Star/更新时间/标签/许可），安装仍然直连 `github.com` 克隆
 
 ### 安装流程（5 步）
