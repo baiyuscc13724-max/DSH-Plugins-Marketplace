@@ -1,5 +1,7 @@
 # DSH插件市场（dsh-plugin-marketplace）
 
+🌐 **语言 / Language:** **中文** | [English](README.en.md)
+
 一个为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）打造的插件市场插件：从 GitHub 的 [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) 拉取全部插件，在 DSH Web GUI 的设置页中以卡片列表展示，支持**一键安装 / 自动更新 / 版本检测 / 已安装识别**，全程无需命令行。
 
 ![类型](https://img.shields.io/badge/类型-客户端%2B服务端插件-blue) ![平台](https://img.shields.io/badge/平台-Web%20GUI-lightgrey)
@@ -17,7 +19,8 @@
   - 安装脚本（`install.sh` / `install.ps1`）→ 执行脚本
 - **用户材料介入**：当插件需要 `API_KEY` / `TOKEN` / `SECRET` 等环境变量时，**安装自动暂停**，在页面内弹窗请你提供材料（或跳过），不会盲装
 - **脚本执行确认**：检测到第三方安装脚本时先征求你的确认（安全提示），拒绝即取消
-- **已安装识别**：启动时自动检测——安装清单（`installed.json`）+ 目录启发式探测双重判定，已安装的插件按钮变为不可点击的灰色「已安装」
+- **已安装识别**：四重判定——安装清单（`installed.json`）+ 目录启发式探测 + 包名映射扫描 + 本体 `repository` 自识别，已安装的插件按钮变为不可点击的灰色「已安装」
+- **中英双语**：界面与安装日志跟随 DSH 的语言设置自动切换 中文 / English（设置 → 常规 → Language）
 - **版本检测与更新**：cordis 插件自动对比已装版本与仓库最新版本（从本地缓存读取，零额外网络请求），不一致时按钮变为「更新」，点击即可覆盖升级
 - **搜索**：按插件名 / 仓库全名 / 标签实时过滤
 - **刷新反馈**：点「刷新」强制重新拉取，并以弹窗提示「刷新成功 / 刷新失败」

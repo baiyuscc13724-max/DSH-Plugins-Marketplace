@@ -1,0 +1,148 @@
+# DSH Plugin Marketplace (dsh-plugin-marketplace)
+
+🌐 **Language / 语言:** **English** | [中文](README.md)
+
+A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH): it pulls **every** repository tagged with the [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) on GitHub and shows them as cards in the Settings page of the DSH Web GUI — **one-click install / auto-update / version detection / installed recognition**, with no command line required.
+
+![Type](https://img.shields.io/badge/Type-client%2Bserver%20plugin-blue) ![Platform](https://img.shields.io/badge/Platform-Web%20GUI-lightgrey)
+
+---
+
+## ✨ Features
+
+- **Full fetch**: on every DSH startup, fetches **all** plugins under `topic:dsh-plugin` from GitHub (paging to the end), sorted **by star count descending**, with a 10-minute cache
+- **One-click install**: each card has an «Install» button that automatically runs: clone repo → detect type → scan required env vars → install
+- **Smart type detection**: automatically detects and installs the following repo types:
+  - `skill` (contains `SKILL.md`) → installed to `~/.dsh/skills/`
+  - agent preset (contains `preset.yml` + `agent.cordis.yml`) → installed to `~/.dsh/.agent-presets/`
+  - cordis plugin (contains `package.json`) → installs dependencies and registers into the web profile
+  - install script (`install.sh` / `install.ps1`) → executes the script
+- **User input interception**: when a plugin needs env vars like `API_KEY` / `TOKEN` / `SECRET`, **installation pauses automatically** and an in-page dialog asks you for the material (or you can skip) — never installs blind
+- **Script execution confirmation**: when a third-party install script is detected, asks for your confirmation first (security warning); declining cancels the install
+- **Installed recognition**: four-way detection — install manifest (`installed.json`) + directory heuristic probing + package-name mapping scan + self-identification via the plugin's own `repository` field; installed plugins show a disabled grey «Installed» button
+- **Bilingual**: the UI and install logs follow DSH's language setting — 中文 / English (Settings → General → Language)
+- **Version detection & updates**: cordis plugins compare the installed version against the latest version of the repo (read from the local cache, zero extra network requests); when they differ the button turns into «Update» — click to overwrite-upgrade
+- **Search**: real-time filtering by plugin name / full repo name / tags
+- **Refresh feedback**: click «Refresh» to force a re-fetch, with a toast confirming «refresh succeeded / refresh failed»
+- **GitHub link**: every card links to the original repo (opens in a new tab)
+- **Dark/light themes**: built entirely on DSH theme tokens (`--dsw-alias-*`), adapting automatically
+- **Self-exclusion**: `deepseek-harness` (DSH's own repo, not a plugin) is hard-coded excluded
+
+---
+
+## 📦 Installing this plugin
+
+The plugin lives at `~/.dsh/profiles/web/node_modules/dsh-plugin-marketplace/` and is registered via `~/.dsh/profiles/web/cordis.patch.yml`:
+
+```yaml
+- insert:
+    - id: plugin-marketplace
+      name: dsh-plugin-marketplace
+```
+
+> ⚠️ **Restart required**: the DSH web profile has configuration hot-reload disabled (`hmr` off). After changing plugin code or registration entries you need to **restart DSH** (re-run `dsh web` or `start-dsh.bat`) and then refresh the page.
+
+---
+
+## 🚀 Usage
+
+1. Restart DSH, open the Web GUI and go to **Settings → DSH Plugin Marketplace**
+2. The page auto-loads all plugins (sorted by stars); click «Refresh» to force a re-fetch
+3. Use the search box to filter plugins by name
+4. Click the button on a plugin card:
+   - **Install** → starts installation with a live-scrolling log
+   - Material needed → an input dialog appears; provide the API key etc. and click «Submit and continue install»
+   - **Update** → overwrite-upgrade when a newer version is detected
+   - **Installed** (grey) → nothing to do
+
+---
+
+## 🔧 How it works
+
+### Install pipeline (5 steps)
+
+```
+[1/5] git clone repo to ~/.dsh/marketplace/cache/<owner>__<name>/
+[2/5] Detect type (SKILL.md / agent preset / install script / package.json)
+[3/5] Scan README / install scripts / .env examples for env vars (API_KEY etc.)
+      └─ found → pause installation, wait for user material (skippable)
+[4/5] Perform install (copy skill / preset / plugin package, or run install script)
+      └─ script type → ask for user confirmation first (third-party code risk)
+[5/5] Write the install manifest (installed.json) and return the result
+```
+
+### Version detection logic
+
+| Data | Source |
+|---|---|
+| Installed version | `installed.json` record; for legacy installs without a record, read the install dir's `package.json` |
+| Latest version | the market cache clone `~/.dsh/marketplace/cache/<owner>__<name>/package.json` |
+
+When both exist and differ → the card shows an «Update» button plus `installed vX → vY`.
+(Only applies to cordis plugins containing `package.json`; skills / presets / script types have no version concept.)
+
+### Installed detection (four-way)
+
+1. `~/.dsh/marketplace/installed.json` install manifest (installed via this plugin)
+2. Directory heuristic probing: `~/.dsh/skills/<name>`, `~/.dsh/.agent-presets/<name>`, `profiles/web/node_modules/<name>` (including the raw repo-name dir), market cache dir
+3. Package-name mapping: scans the `package.json` names of installed directories and compares them against the repo name / cached clone package name — repos whose name differs from the package name (e.g. `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`) are still recognized, and the installed version is read correctly
+4. Self-identification: a repo matching this plugin's own `repository` field in `package.json` counts as installed (the market never shows its own repo as «Install»)
+
+---
+
+## 📁 File structure
+
+```
+~/.dsh/
+├── profiles/web/
+│   ├── node_modules/dsh-plugin-marketplace/   ← this plugin
+│   │   ├── package.json        (dsh.client declaration + exports)
+│   │   └── lib/
+│   │       ├── index.js        (server: GitHub fetch / install pipeline / version detection)
+│   │       └── client.js       (client: marketplace page UI)
+│   └── cordis.patch.yml        (plugin registration entry)
+└── marketplace/
+    ├── cache/<owner>__<name>/  (clone cache; data source for install & version comparison)
+    └── installed.json          (install manifest: type / name / location / version / installedAt)
+```
+
+---
+
+## 📡 HTTP API
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/marketplace/list` | GET | Plugin list (star-descending, with `installed` / `installedVersion` / `latestVersion` / `updateAvailable`); `?refresh=1` forces a re-fetch |
+| `/api/marketplace/install` | POST | Install / update, body: `{ "repo": "owner/name", "answers": { "ENV_NAME": "value" } }`; returns `done` / `awaiting-input` / `aborted` / `failed` status + step-by-step log |
+
+---
+
+## ⚠️ Security notes
+
+- Installing means trusting the repo: install scripts (`install.sh` / `install.ps1`) can **execute arbitrary code** on your machine; the market asks for confirmation before running them
+- API keys and other material you provide are passed only as **environment variables for that installation** and are never written to any persistent file (except what the install script itself does)
+- Plugin packages are copied into the web profile and registered in `cordis.patch.yml` — they load with every DSH startup, so only install repos you trust
+
+---
+
+## 🔄 Known limitations
+
+- Version detection only works for plugins with `package.json`; skills / presets / script types have no version concept
+- The unauthenticated GitHub search API is rate-limited to **10 requests/minute**; clicking «Refresh» too often may hit the limit (the UI will report refresh failure — wait and retry)
+- «Installed» recognition for script-type plugins is based on cache-dir existence; after deleting the cache it will show as installable again
+- Plugin code changes require a **DSH restart** to take effect (the web profile's HMR is disabled)
+
+---
+
+## 🛠️ Development & maintenance
+
+- Server-side logic: edit `lib/index.js` (syntax check: `node --check`)
+- Page UI: edit `lib/client.js` (browser bundle, `window.__ModuleLoader__.load` format; `require` resolves DSH platform modules)
+- Restart DSH for changes to take effect; the client bundle's revision (`rev`) is content-hashed, and the browser fetches the new version automatically after a restart
+- Localization: dictionaries live at the top of `lib/client.js` (UI) and in `MESSAGES` in `lib/index.js` (server logs); the plugin registers its namespace into DSH's locale service and follows the DSH language setting (fallback: browser language)
+
+---
+
+## 📄 License
+
+MIT
