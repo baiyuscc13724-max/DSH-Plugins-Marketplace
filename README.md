@@ -78,10 +78,12 @@
 两者都存在且不一致 → 卡片显示「更新」按钮 + `已装 vX → vY` 提示。
 （仅对含 `package.json` 的 cordis 插件生效；skill / 预设 / 脚本类无版本概念。）
 
-### 已安装判定（双重）
+### 已安装判定（四重）
 
 1. `~/.dsh/marketplace/installed.json` 安装清单（本插件安装的）
-2. 目录启发式探测：`~/.dsh/skills/<名>`、`~/.dsh/.agent-presets/<名>`、`profiles/web/node_modules/<名>`、市场缓存目录
+2. 目录启发式探测：`~/.dsh/skills/<名>`、`~/.dsh/.agent-presets/<名>`、`profiles/web/node_modules/<名>`（含原始仓库名目录）、市场缓存目录
+3. 包名映射：扫描已安装目录的 `package.json` 名称，与仓库名/缓存克隆包名比对——仓库名与包名不一致（如 `DSH-Plugins-Marketplace` → `dsh-plugin-marketplace`）也能识别，并正确读出已装版本
+4. 本体识别：仓库命中本插件自身 `package.json` 的 `repository` 字段即视为已安装（市场不会把自己的仓库显示为「安装」）
 
 ---
 

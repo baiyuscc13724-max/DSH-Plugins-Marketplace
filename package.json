@@ -19,5 +19,9 @@
       "immediately": true
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bradeGithub/DSH-Plugins-Marketplace.git"
+  },
   "license": "MIT"
 }
