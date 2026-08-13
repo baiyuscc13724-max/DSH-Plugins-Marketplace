@@ -4,7 +4,14 @@
 
 一个为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）打造的插件市场插件：从 GitHub 的 [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) 拉取全部插件，在 DSH Web GUI 的设置页中以卡片列表展示，支持**一键安装 / 自动更新 / 版本检测 / 已安装识别**，全程无需命令行。
 
-![类型](https://img.shields.io/badge/类型-客户端%2B服务端插件-blue) ![平台](https://img.shields.io/badge/平台-Web%20GUI-lightgrey)
+![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-生态插件-4D6BFE?logo=deepseek&logoColor=white)
+![GitHub Stars](https://img.shields.io/github/stars/bradeGithub/DSH-Plugins-Marketplace?logo=github)
+![License](https://img.shields.io/github/license/bradeGithub/DSH-Plugins-Marketplace)
+![Registry CI](https://img.shields.io/github/actions/workflow/status/bradeGithub/DSH-Plugins-Marketplace/registry.yml?label=registry%20CI)
+![Last Commit](https://img.shields.io/github/last-commit/bradeGithub/DSH-Plugins-Marketplace)
+![类型](https://img.shields.io/badge/类型-客户端%2B服务端插件-blue)
+![平台](https://img.shields.io/badge/平台-Web%20GUI-lightgrey)
+![i18n](https://img.shields.io/badge/i18n-中文%20%7C%20English-important)
 
 ---
 

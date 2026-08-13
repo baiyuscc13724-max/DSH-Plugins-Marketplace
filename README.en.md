@@ -4,7 +4,14 @@
 
 A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH): it pulls **every** repository tagged with the [`dsh-plugin` topic](https://github.com/topics/dsh-plugin) on GitHub and shows them as cards in the Settings page of the DSH Web GUI — **one-click install / auto-update / version detection / installed recognition**, with no command line required.
 
-![Type](https://img.shields.io/badge/Type-client%2Bserver%20plugin-blue) ![Platform](https://img.shields.io/badge/Platform-Web%20GUI-lightgrey)
+![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-ecosystem%20plugin-4D6BFE?logo=deepseek&logoColor=white)
+![GitHub Stars](https://img.shields.io/github/stars/bradeGithub/DSH-Plugins-Marketplace?logo=github)
+![License](https://img.shields.io/github/license/bradeGithub/DSH-Plugins-Marketplace)
+![Registry CI](https://img.shields.io/github/actions/workflow/status/bradeGithub/DSH-Plugins-Marketplace/registry.yml?label=registry%20CI)
+![Last Commit](https://img.shields.io/github/last-commit/bradeGithub/DSH-Plugins-Marketplace)
+![Type](https://img.shields.io/badge/Type-client%2Bserver%20plugin-blue)
+![Platform](https://img.shields.io/badge/Platform-Web%20GUI-lightgrey)
+![i18n](https://img.shields.io/badge/i18n-zh%20%7C%20en-important)
 
 ---
 
