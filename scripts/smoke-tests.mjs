@@ -1,6 +1,6 @@
 // 冒烟测试：验证安全加固与纯函数修复（R1 Host 白名单 / R2 env 最小化 / n3 版本比较等）。
 // 运行：node scripts/smoke-tests.mjs（CI 的 syntax check 步骤同步执行）
-import { compareVersions, isTrustedRequest, isTrustedHost, isSensitiveEnvKey, buildMinimalEnv, buildFilteredEnv } from "../lib/index.js";
+import { compareVersions, isTrustedRequest, isTrustedHost, isSensitiveEnvKey, buildMinimalEnv, buildFilteredEnv, looksLikeDshPlugin } from "../lib/index.js";
 import { classifyTree, shouldInheritProbe } from "./build-registry.mjs";
 
 let pass = 0, fail = 0;
@@ -92,6 +92,17 @@ check("旧条目无探测结果 → 重新探测", shouldInheritProbe({ full_nam
 check("has_skill=null（护栏中断）→ 重新探测", shouldInheritProbe({ full_name: "a/b", updated_at: "2026-01-01T00:00:00Z" }, { full_name: "a/b", updated_at: "2026-01-01T00:00:00Z", has_skill: null }), false);
 check("has_skill=false（真实结果）→ 继承", shouldInheritProbe({ full_name: "a/b", updated_at: "2026-01-01T00:00:00Z" }, { full_name: "a/b", updated_at: "2026-01-01T00:00:00Z", has_skill: false }), true);
 check("无旧条目 → 重新探测", shouldInheritProbe({ full_name: "c/d", updated_at: "2026-01-01T00:00:00Z" }, null), false);
+
+// ---- 非插件判定: looksLikeDshPlugin ----
+check("有 dsh 字段 → 插件", looksLikeDshPlugin({ name: "x", dsh: { client: {} } }), true);
+check("peer 依赖 @deepseek-ai/cordis → 插件", looksLikeDshPlugin({ name: "x", peerDependencies: { "@deepseek-ai/cordis": "^1" } }), true);
+check("依赖 @deepseek-ai/dsh → 插件", looksLikeDshPlugin({ name: "x", dependencies: { "@deepseek-ai/dsh": "^1" } }), true);
+check("依赖 @deepseek-ai/dsh-client-runtime → 插件", looksLikeDshPlugin({ name: "x", dependencies: { "@deepseek-ai/dsh-client-runtime": "^1" } }), true);
+check("普通 npm 项目（无 dsh 声明）→ 非插件", looksLikeDshPlugin({ name: "ipollowork", dependencies: { react: "^18" } }), false);
+check("无依赖无字段 → 非插件", looksLikeDshPlugin({ name: "x" }), false);
+check("空对象 → 非插件", looksLikeDshPlugin({}), false);
+check("null → 未知", looksLikeDshPlugin(null), null);
+check("非对象 → 未知", looksLikeDshPlugin("str"), null);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail === 0 ? 0 : 1);
