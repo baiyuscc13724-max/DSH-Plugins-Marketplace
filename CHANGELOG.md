@@ -138,3 +138,6 @@
 - 脚本执行确认（安全提示）/ third-party script confirmation dialog
 - 版本检测与「更新」按钮 / version detection and «Update» button
 - 搜索 / 刷新反馈 / GitHub 原链 / 深浅色适配 / search, refresh feedback, GitHub links, dark/light themes
+# 1.2.2
+
+- Fix packaged Windows installs under Electron/Node 24 by launching the system npm shim through `cmd.exe`; plugin dependencies no longer fail with `spawn EINVAL`.
