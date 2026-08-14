@@ -15,6 +15,17 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 
 ---
 
+## 🖥️ Included in a Windows desktop app
+
+Prefer not to use the command line? [Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) includes this marketplace. Install the desktop app, then open **Settings → DSH Plugin Marketplace** to browse, install, and update community plugins.
+
+- [Project home](https://github.com/baiyuscc13724-max/deepseek-harness-desktop)
+- [Windows installer and portable downloads](https://github.com/baiyuscc13724-max/deepseek-harness-desktop/releases)
+
+Harness Desktop is a community project. The marketplace itself remains independently maintained in this repository.
+
+---
+
 ## ⚡ Quick install (copy & run)
 
 **One sentence to hand to an AI** (any AI with command execution works — no further explanation needed):
