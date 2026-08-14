@@ -15,17 +15,6 @@
 
 ---
 
-## 🖥️ Windows 桌面版内置
-
-不想用命令行安装？[Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) 已经内置本插件市场。安装桌面版后，打开 **设置 → DSH插件市场**，就能直接查看、安装和更新社区插件。
-
-- [项目主页](https://github.com/baiyuscc13724-max/deepseek-harness-desktop)
-- [Windows 安装版和免安装版](https://github.com/baiyuscc13724-max/deepseek-harness-desktop/releases)
-
-Harness Desktop 是社区项目；插件市场本体仍由本仓库独立维护。
-
----
-
 ## ⚡ 一键安装（复制即用）
 
 **喂给 AI 的一句话**（AI 具备命令执行能力即可，无需解释）：
@@ -203,6 +192,14 @@ GitHub Actions（每 2 小时，仓库自带 token）
 - **Skills 索引范围**：受 GitHub Search API 单 query 硬上限（1000 条）约束，`skills.json` 当前收录 `agent-skills` 与 `claude-skills` 两个 topic 各自最新更新的 1000 条（并集 1867 个仓库）；全量索引（topic 页爬取）计划在 v1.3 实现
 - 安装脚本类插件的「已安装」判定基于缓存目录存在性，卸载（删除缓存）后会重新显示为可安装
 - 插件代码修改后需**重启 DSH** 才能生效（Web profile 的 HMR 处于禁用状态）
+
+---
+
+## 🌱 第三方生态
+
+[Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) 是第三方社区维护的 Windows 桌面版，稳定版已内置本插件市场。用户可以在 **设置 → DSH插件市场** 中直接查看、安装和更新社区插件，无需使用命令行。
+
+此条目由 Harness Desktop 作者提交；该作者同时维护桌面端使用的 DSH-Plugins-Marketplace 分支。Harness Desktop 与本仓库及 DeepSeek 官方均无官方关联。
 
 ---
 

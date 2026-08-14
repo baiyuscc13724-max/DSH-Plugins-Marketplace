@@ -15,17 +15,6 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 
 ---
 
-## 🖥️ Included in a Windows desktop app
-
-Prefer not to use the command line? [Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) includes this marketplace. Install the desktop app, then open **Settings → DSH Plugin Marketplace** to browse, install, and update community plugins.
-
-- [Project home](https://github.com/baiyuscc13724-max/deepseek-harness-desktop)
-- [Windows installer and portable downloads](https://github.com/baiyuscc13724-max/deepseek-harness-desktop/releases)
-
-Harness Desktop is a community project. The marketplace itself remains independently maintained in this repository.
-
----
-
 ## ⚡ Quick install (copy & run)
 
 **One sentence to hand to an AI** (any AI with command execution works — no further explanation needed):
@@ -203,6 +192,14 @@ When both exist and differ → the card shows an «Update» button plus `install
 - **Skills index scope**: bounded by the GitHub Search API hard cap (1000 results per query) — `skills.json` currently covers the 1000 most recently updated repos of each of `agent-skills` and `claude-skills` (1867 repos after dedup); a full index (topic-page crawling) is planned for v1.3
 - «Installed» recognition for script-type plugins is based on cache-dir existence; after deleting the cache it will show as installable again
 - Plugin code changes require a **DSH restart** to take effect (the web profile's HMR is disabled)
+
+---
+
+## 🌱 Third-party ecosystem
+
+[Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) is a third-party, community-maintained Windows desktop app. Its stable release includes this marketplace, so users can browse, install, and update community plugins from **Settings → DSH Plugin Marketplace** without using the command line.
+
+This entry was submitted by the Harness Desktop author, who also maintains the DSH-Plugins-Marketplace fork used by the desktop app. Harness Desktop has no official affiliation with this repository or DeepSeek.
 
 ---
 
