@@ -15,6 +15,17 @@
 
 ---
 
+## 🖥️ Windows 桌面版内置
+
+不想用命令行安装？[Harness Desktop](https://github.com/baiyuscc13724-max/deepseek-harness-desktop) 已经内置本插件市场。安装桌面版后，打开 **设置 → DSH插件市场**，就能直接查看、安装和更新社区插件。
+
+- [项目主页](https://github.com/baiyuscc13724-max/deepseek-harness-desktop)
+- [Windows 安装版和免安装版](https://github.com/baiyuscc13724-max/deepseek-harness-desktop/releases)
+
+Harness Desktop 是社区项目；插件市场本体仍由本仓库独立维护。
+
+---
+
 ## ⚡ 一键安装（复制即用）
 
 **喂给 AI 的一句话**（AI 具备命令执行能力即可，无需解释）：
