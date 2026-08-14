@@ -1,6 +1,9 @@
 // 冒烟测试：验证安全加固与纯函数修复（R1 Host 白名单 / R2 env 最小化 / n3 版本比较等）。
 // 运行：node scripts/smoke-tests.mjs（CI 的 syntax check 步骤同步执行）
-import { compareVersions, isTrustedRequest, isTrustedHost, isSensitiveEnvKey, buildMinimalEnv, buildFilteredEnv, looksLikeDshPlugin } from "../lib/index.js";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { compareVersions, isTrustedRequest, isTrustedHost, isSensitiveEnvKey, buildMinimalEnv, buildFilteredEnv, looksLikeDshPlugin, findSkillRoots, detectType } from "../lib/index.js";
 import { classifyTree, shouldInheritProbe } from "./build-registry.mjs";
 
 let pass = 0, fail = 0;
@@ -83,6 +86,20 @@ check("install.sh 命中", classifyTree([blob("install.sh")], false), { has_skil
 check("子目录 install.ps1 命中", classifyTree([blob("scripts/install.ps1")], false), { has_skill: false, has_install_script: true });
 check("myinstall.sh 不误伤", classifyTree([blob("myinstall.sh")], false), { has_skill: false, has_install_script: false });
 check("非数组 tree 容错", classifyTree(null, false), { has_skill: false, has_install_script: false });
+
+// ---- 通用 Skills 安装：识别仓库根目录以下的多个 SKILL.md ----
+const multiSkillRepo = await mkdtemp(join(tmpdir(), "dsh-marketplace-multi-skill-"));
+try {
+  await mkdir(join(multiSkillRepo, "skills", "pdf"), { recursive: true });
+  await mkdir(join(multiSkillRepo, "skills", "slides"), { recursive: true });
+  await writeFile(join(multiSkillRepo, "skills", "pdf", "SKILL.md"), "---\nname: pdf\n---\n");
+  await writeFile(join(multiSkillRepo, "skills", "slides", "SKILL.md"), "---\nname: slides\n---\n");
+  const roots = await findSkillRoots(multiSkillRepo);
+  check("多 Skill 仓库发现全部 SKILL.md", roots.map((value) => value.split(/[\\/]/).at(-1)).sort(), ["pdf", "slides"]);
+  check("多 Skill 仓库识别为 skill", await detectType(multiSkillRepo), "skill");
+} finally {
+  await rm(multiSkillRepo, { recursive: true, force: true });
+}
 
 // ---- 步骤1: shouldInheritProbe（增量继承判定）----
 const oldRepo = { full_name: "a/b", updated_at: "2026-01-01T00:00:00Z", has_skill: true, has_install_script: false, pkg_name: "abc" };

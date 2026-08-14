@@ -4,6 +4,15 @@
 
 ---
 
+## v1.2.1 — 2026-08-14（傻瓜式安装与多 Skill 仓库 / Guided install and multi-skill repositories）
+
+- 通用 Skills 自动识别并安装仓库任意子目录中的多个 `SKILL.md`，不再把 `anthropics/skills` 等合集误判为说明文档。
+- Skill 和 Agent 预设只复制文件，不再从 README 示例误判并索要 API Key；只有实际执行脚本或安装插件时才检查环境变量。
+- 安装过程改为固定居中的进度窗口，点击后立即显示“安装中”，不再让卡片消失或把页面滚到顶部。
+- “提交材料”改为“安装前确认”；只有真正需要密钥的插件才显示密钥输入框。
+
+---
+
 ## v1.2.0 — 2026-08-14（Skills 栏目 + 安装安全强化 / Skills column & install hardening）
 
 - **通用 Skills 栏目（完整上线）**：设置页新增 tab「DSH 插件 | 通用 Skills」——`GET /api/marketplace/skills` 路由 + `skills.json` 全量索引构建器（`SOURCES_MODE=skills` 拉取 `topic:agent-skills` ∪ `topic:claude-skills` 并集，Trees API 探测 `has_skill` / `has_install_script`，truncated 大仓库标 null 不误判，增量继承 + 断点快照续跑 + 额度护栏）；前端分页触底加载（每页 60 + IntersectionObserver）、搜索、🛡 含安装脚本角标、「未验证」弱提示，安装复用现有 skill 流程 / Skills column fully shipped: new «DSH Plugins | General Skills» tabs — `/api/marketplace/skills` route + `skills.json` builder (multi-topic union, Trees probing, incremental inheritance, rate-limit guardrail); front-end paginated infinite scroll (60/page + IntersectionObserver), search, 🛡 install-script badge, «unverified» hint; install reuses the existing skill pipeline
