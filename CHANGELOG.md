@@ -6,6 +6,13 @@
 
 ## Unreleased / 未发布
 
+- **第二轮代码审查残留问题全部修复**（对应 `review.md` 的 R1/R2/R3 + m1–m6 + n2–n5）：
+  - **R1 DNS rebinding**：安装端点由「Origin===Host」改为 **Host 白名单校验**——仅放行本机回环（localhost/127.0.0.1/[::1]）、局域网私有网段（10/8、172.16/12、192.168/16）与 `DSH_MARKETPLACE_ALLOWED_HOSTS` 显式配置的主机，攻击者域名（含 rebinding 到 127.0.0.1 的域名）一律拒绝 / install endpoint now validates the Host against an allowlist (loopback / private LAN ranges / `DSH_MARKETPLACE_ALLOWED_HOSTS`) — attacker domains, including DNS-rebinding ones, are always rejected
+  - **R2 环境变量最小化**：第三方安装脚本只获得**基础系统变量白名单**，npm 安装剔除全部密钥类变量（TOKEN/KEY/SECRET/PASSWORD/CREDENTIAL）——`process.env` 不再全量外泄给第三方代码 / third-party scripts get a minimal env allowlist; npm installs strip all secret-class vars — `process.env` is no longer leaked wholesale
+  - **R3 环境变量「空值可跳过」真正生效**（键存在即视为已提供），并顺带修复连带 bug：此前二次提交时用户填写的密钥不在 env 白名单里、插件实际拿不到 / empty-value skip now works (key presence decides), plus the related bug where user-submitted secrets never reached the plugin env
+  - **m1** 列表标注改索引写入，恢复「按 Star 降序」的稳定顺序；**m2** 仅当已装版本**严格低于**最新版本才提示「更新」（仓库回滚不再误报）；**m3** 安装锁 key 大小写归一（Foo/Bar 与 foo/bar 命中同一把锁）；**m4** patch 写入失败如实报错，不再误显示「已存在条目，跳过注册」；**m5** `installed.json` 写入串行化，并发安装不再互相覆盖；**m6** 外部 fetch 加 15 秒超时，CDN 挂起不再卡死列表服务
+  - **n2** 403/413 错误文案接入 i18n；**n3** 预发布版本按段数字比较（`rc.10 > rc.9`）+ 支持一位/两位版本号；**n4** 请求体 Buffer 收集后一次解码；**n5** 客户端展示 403/409 的真实拒绝原因
+- **冒烟测试**：新增 `scripts/smoke-tests.mjs`（44 项断言，覆盖 R1/R2/n3 等修复），CI 语法检查步骤同步执行 / smoke tests (`scripts/smoke-tests.mjs`, 44 assertions) added and wired into CI
 - **先装插件后装市场也能识别**：打开市场即自动扫描已安装的 cordis 插件（含 scoped 包 `@scope/name`），通过包名映射 + `repository` 双向校验与市场仓库比对，命中即标「已安装」/ plugins installed before the marketplace are now auto-detected on open: scans installed cordis packages (including scoped ones) and reconciles them against market repos via package-name mapping + bidirectional `repository` checks
 - **DSH 官方插件清单**：运行时自动枚举 `@deepseek-ai/*` 官方包（含兜底清单），官方插件永远不会被当成或误标为用户安装的市场插件 / DSH official plugin list (runtime-enumerated `@deepseek-ai/*` plus fallback): official plugins are never treated as user-installed market plugins
 - **索引携带包名（pkg_name）**：registry CI 构建时抓取各仓库 package.json 的 name，用于包名与仓库名不一致时的关联 / registry now carries each repo's package name (`pkg_name`) for robust repo↔package association

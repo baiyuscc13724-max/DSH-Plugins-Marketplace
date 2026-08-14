@@ -29,9 +29,15 @@ jobs:
           node --check scripts/build-registry.mjs
           node --check lib/index.js
           node --check lib/client.js
+          node scripts/smoke-tests.mjs
 
-      - name: Build registry.json
+      - name: Build DSH registry
         run: node scripts/build-registry.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build skills registry
+        run: SOURCES_MODE=skills node scripts/build-registry.mjs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -40,9 +46,9 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add registry.json
+          git add registry.json skills.json
           if git diff --cached --quiet; then
-            echo "registry.json 无变化，跳过提交"
+            echo "索引无变化，跳过提交"
             exit 0
           fi
           git commit -m "chore: update registry.json"

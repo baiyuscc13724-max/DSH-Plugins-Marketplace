@@ -159,6 +159,7 @@ When both exist and differ → the card shows an «Update» button plus `install
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/marketplace/list` | GET | Plugin list (star-descending, with `installed` / `installedVersion` / `latestVersion` / `updateAvailable`); `?refresh=1` forces a re-fetch |
+| `/api/marketplace/skills` | GET | General skills list (from `skills.json`, filtered to `has_skill !== false`, with `installed` / `installedAt`); `?refresh=1` forces a re-fetch |
 | `/api/marketplace/install` | POST | Install / update, body: `{ "repo": "owner/name", "answers": { "ENV_NAME": "value" } }`; returns `done` / `awaiting-input` / `aborted` / `failed` status + step-by-step log |
 
 ---
@@ -167,6 +168,8 @@ When both exist and differ → the card shows an «Update» button plus `install
 
 - Installing means trusting the repo: install scripts (`install.sh` / `install.ps1`) can **execute arbitrary code** on your machine; the market asks for confirmation before running them
 - API keys and other material you provide are passed only as **environment variables for that installation** and are never written to any persistent file (except what the install script itself does)
+- Third-party install scripts run with a **minimal environment** (basic system variables + the material you submitted); npm dependency installs strip all secret-class variables — `process.env` is never leaked wholesale to plugin code
+- The install endpoint only accepts trusted origins: requests must carry the `X-DSH-Marketplace` header and the Host must be in the **allowlist** (loopback / private LAN ranges / extra hosts via the `DSH_MARKETPLACE_ALLOWED_HOSTS` env var), protecting against cross-site forgery and DNS rebinding
 - Plugin packages are copied into the web profile and registered in `cordis.patch.yml` — they load with every DSH startup, so only install repos you trust
 
 ---
@@ -182,7 +185,7 @@ When both exist and differ → the card shows an «Update» button plus `install
 
 ## 🔄 Known limitations
 
-- **Security model**: the install endpoint has no user authentication; protection relies on **local-network isolation plus a CSRF header check** — do not expose the DSH web port to untrusted networks. Installing means executing third-party code on your machine (npm dependencies and install scripts); only install repos you trust and have reviewed
+- **Security model**: the install endpoint has no user authentication; protection relies on **local-network isolation plus a CSRF header check, a Host allowlist (loopback / LAN / configurable) and an Origin check** — do not expose the DSH web port to untrusted networks. Installing means executing third-party code on your machine (npm dependencies and install scripts); only install repos you trust and have reviewed
 - Version detection only works for plugins with `package.json`; skills / presets / script types have no version concept
 - The plugin list is served from the static registry (CDN) by default; the GitHub search API is used only when both registry sources are unreachable, and its unauthenticated limit is **10 requests/minute** — clicking «Refresh» too often during fallback may hit the limit (the UI will report refresh failure — wait and retry)
 - «Installed» recognition for script-type plugins is based on cache-dir existence; after deleting the cache it will show as installable again

@@ -159,6 +159,7 @@ GitHub Actions（每 2 小时，仓库自带 token）
 | 接口 | 方法 | 说明 |
 |---|---|---|
 | `/api/marketplace/list` | GET | 插件列表（按 Star 降序，含 `installed` / `installedVersion` / `latestVersion` / `updateAvailable`）；`?refresh=1` 强制重新拉取 |
+| `/api/marketplace/skills` | GET | 通用 Skills 列表（`skills.json` 索引，过滤 `has_skill !== false`，含 `installed` / `installedAt`）；`?refresh=1` 强制重新拉取 |
 | `/api/marketplace/install` | POST | 安装 / 更新，body：`{ "repo": "owner/name", "answers": { "ENV_NAME": "值" } }`；返回 `done` / `awaiting-input` / `aborted` / `failed` 状态 + 逐步日志 |
 
 ---
@@ -167,6 +168,8 @@ GitHub Actions（每 2 小时，仓库自带 token）
 
 - 安装即信任该仓库：安装脚本（`install.sh` / `install.ps1`）会在你的机器上**执行任意代码**，市场会在执行前弹出确认
 - 你提供的 API Key 等材料只作为**本次安装的环境变量**传入，不会写入任何持久化文件（安装脚本自身的行为除外）
+- 第三方安装脚本运行时只获得**最小化环境变量**（基础系统变量 + 你提交的材料）；npm 依赖安装会剔除全部密钥类变量——`process.env` 不会全量外泄给插件代码
+- 安装端点仅接受可信来源：请求必须携带 `X-DSH-Marketplace` 头，且 Host 在**白名单**内（本机回环 / 局域网私有网段 / 环境变量 `DSH_MARKETPLACE_ALLOWED_HOSTS` 显式追加），防跨站伪造与 DNS rebinding
 - 插件包会被复制到 web profile 并注册到 `cordis.patch.yml`——这意味着它会随 DSH 启动加载，请只安装你信任的仓库
 
 ---
@@ -182,7 +185,7 @@ GitHub Actions（每 2 小时，仓库自带 token）
 
 ## 🔄 已知限制
 
-- **安全模型**：安装端点无用户认证，防护依赖「本地网络隔离 + CSRF 头校验」——请勿将 DSH web 端口暴露到不可信网络；安装即意味着在机器上执行第三方代码（npm 依赖与安装脚本），请只安装你信任并已核验的仓库
+- **安全模型**：安装端点无用户认证，防护依赖「本地网络隔离 + CSRF 头 + Host 白名单（本机/局域网/可配置）+ Origin 校验」——请勿将 DSH web 端口暴露到不可信网络；安装即意味着在机器上执行第三方代码（npm 依赖与安装脚本），请只安装你信任并已核验的仓库
 - 版本检测仅对含 `package.json` 的插件生效；skill / 预设 / 脚本类无版本概念
 - 插件列表默认走静态索引（CDN）；仅当索引的两个源都不可用时才回退 GitHub 搜索 API，此时未认证限流 **10 次/分钟**，频繁点「刷新」可能触发限流（会提示刷新失败，稍等再试）
 - 安装脚本类插件的「已安装」判定基于缓存目录存在性，卸载（删除缓存）后会重新显示为可安装
