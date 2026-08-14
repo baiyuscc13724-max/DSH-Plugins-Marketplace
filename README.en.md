@@ -50,6 +50,7 @@ A plugin marketplace for [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 - **Bilingual**: the UI and install logs follow DSH's language setting — 中文 / English (Settings → General → Language)
 - **Version detection & updates**: cordis plugins compare the installed version against the latest version of the repo (read from the local cache, zero extra network requests); when they differ the button turns into «Update» — click to overwrite-upgrade
 - **Search**: real-time filtering by plugin name / full repo name / tags
+- **General Skills column**: switch to the «General Skills» tab in Settings — browse the CI-built skills index (`agent-skills` ∪ `claude-skills`, 1800+ repos) with search / paginated infinite scroll / one-click install to `~/.dsh/skills/` / installed recognition; repos with install scripts carry a 🛡 badge, unverified probes show a weak «unverified» hint
 - **Refresh feedback**: click «Refresh» to force a re-fetch, with a toast confirming «refresh succeeded / refresh failed»
 - **GitHub link**: every card links to the original repo (opens in a new tab)
 - **Dark/light themes**: built entirely on DSH theme tokens (`--dsw-alias-*`), adapting automatically

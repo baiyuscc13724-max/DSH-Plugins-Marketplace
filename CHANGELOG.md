@@ -4,9 +4,9 @@
 
 ---
 
-## v1.2.0 — 2026-08-14（Skills 栏目基建 + 安装安全强化 / Skills infra & install hardening）
+## v1.2.0 — 2026-08-14（Skills 栏目 + 安装安全强化 / Skills column & install hardening）
 
-- **通用 Skills 栏目（服务端就绪）**：`GET /api/marketplace/skills` 路由 + `skills.json` 全量索引构建器——`SOURCES_MODE=skills` 拉取 `topic:agent-skills` ∪ `topic:claude-skills` 并集，Trees API 探测 `has_skill` / `has_install_script`（truncated 大仓库标 null 不误判），增量继承 + 断点快照续跑 + 额度护栏；安装复用现有 skill 流程零改动 / Skills column server-side ready: `/api/marketplace/skills` route + `skills.json` builder (multi-topic union, Trees probing, incremental inheritance, rate-limit guardrail); install reuses the existing skill pipeline
+- **通用 Skills 栏目（完整上线）**：设置页新增 tab「DSH 插件 | 通用 Skills」——`GET /api/marketplace/skills` 路由 + `skills.json` 全量索引构建器（`SOURCES_MODE=skills` 拉取 `topic:agent-skills` ∪ `topic:claude-skills` 并集，Trees API 探测 `has_skill` / `has_install_script`，truncated 大仓库标 null 不误判，增量继承 + 断点快照续跑 + 额度护栏）；前端分页触底加载（每页 60 + IntersectionObserver）、搜索、🛡 含安装脚本角标、「未验证」弱提示，安装复用现有 skill 流程 / Skills column fully shipped: new «DSH Plugins | General Skills» tabs — `/api/marketplace/skills` route + `skills.json` builder (multi-topic union, Trees probing, incremental inheritance, rate-limit guardrail); front-end paginated infinite scroll (60/page + IntersectionObserver), search, 🛡 install-script badge, «unverified» hint; install reuses the existing skill pipeline
 - **索引当前覆盖 1867 个仓库**：受 GitHub Search API 单 query 硬上限 1000 条约束（两个 topic 各取最新 1000 条并集）；**v1.3 计划全量索引**（topic 页爬虫等）/ registry covers 1867 repos — Search API caps at 1000 results/query; full index planned for v1.3
 - **全局安装互斥**：同一时刻只允许一个安装任务，其余安装按钮全部禁用（客户端）+ 服务端 409 兜底，从源头杜绝并发安装竞态 / global install mutex: one install at a time, all other buttons disabled + server-side 409
 - **非插件仓库弹窗**：`package.json` 未声明 DSH 插件能力的仓库（聚合页 / 桌面应用 / 普通 npm 项目，如 awesome-*、iPolloWork）安装前弹窗告知「非插件，建议自行安装」，可选强制安装或取消 / non-plugin repo detection: repos without DSH plugin declaration get a confirmation dialog (install manually or force-install)
